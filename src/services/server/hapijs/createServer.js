@@ -11,7 +11,7 @@ const createServer = async () => {
   server.route({
     method: 'GET',
     path: '/',
-    handler: (_, h) => h.response('OPEN-FORUM-API is Online'),
+    handler: (_, h) => h.response('OPEN-FORUM-API Hapijs is Online'),
   });
 
   return server;

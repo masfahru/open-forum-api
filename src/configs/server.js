@@ -3,7 +3,7 @@ const Joi = require('joi');
 
 // Joi Schema for server configuration
 const schema = Joi.object().keys({
-  NODE_ENV: Joi.string().valid('production', 'development', 'test').required(),
+  NODE_ENV: Joi.string().valid('production', 'development', 'test').default('development'),
   PORT: Joi.number().min(0).max(65535).default(5000),
   HOST: Joi.string().hostname().default('localhost'),
 }).unknown();
