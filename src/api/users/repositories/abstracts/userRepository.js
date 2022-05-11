@@ -2,15 +2,15 @@
 /* eslint-disable no-unused-vars */
 
 /**
- * Abstraction Repository for handling user data
+ * Abstraction Repository for handling database users
  */
 
 module.exports = class UserRepository {
   /**
    * @method addUser
-   * @param {{userPreRegister: UserPreRegister}} user
+   * @param {UserPreRegister} user
    */
-  async addUser({ userPreRegister }) {
+  async addUser(userPreRegister) {
     throw new Error('USER_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 
