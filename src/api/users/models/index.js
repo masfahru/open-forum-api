@@ -1,6 +1,6 @@
-const UserLogin = require('./UserLogin');
-const UserPreRegister = require('./UserPreRegister');
-const UserRegistered = require('./UserRegistered');
+const UserLogin = require('./userLogin');
+const UserPreRegister = require('./userPreRegister');
+const UserRegistered = require('./userRegistered');
 
 module.exports = {
   UserLogin,
