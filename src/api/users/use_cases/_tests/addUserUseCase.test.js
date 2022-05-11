@@ -1,6 +1,6 @@
 const { UserPreRegister, UserRegistered } = require('../../models');
 const UserRepository = require('../../repositories/abstracts/userRepository');
-const PasswordHash = require('../../../../utils/abstracts/passwordHash');
+const PasswordHash = require('../../../../utils/security/abstracts/passwordHash');
 const AddUserUseCase = require('../addUserUseCase');
 
 /**
@@ -8,41 +8,37 @@ const AddUserUseCase = require('../addUserUseCase');
  */
 describe('AddUserUseCase', () => {
   it('should orchestrating the add user action correctly', async () => {
+    // Arrange
+    const username = 'fahru';
+    const password = 'Password123#';
+    const fullname = 'Fahru Ibrahim';
+    const id = 'user-123-456';
+
     const payload = {
-      username: 'fahru',
-      password: 'Password123#',
-      fullname: 'Dicoding Indonesia',
+      username,
+      password,
+      fullname,
     };
 
     const expectedPayload = {
-      id: 'user-123-456',
-      username: 'fahru',
-      fullname: 'Dicoding Indonesia',
+      id,
+      username,
+      fullname,
     };
 
-    // Create User Pre Register Model
     const userPreRegister = new UserPreRegister(payload);
-
-    // Expect the result to be an object of User Registered Model
     const userRegistered = new UserRegistered(expectedPayload);
-
-    // Mocking dependency of use case
     const mockUserRepository = new UserRepository();
     const mockPasswordHash = new PasswordHash();
 
     // Mocking needed function
-    // Check if username is unique
     mockUserRepository.isUsernameUnique = jest.fn().mockResolvedValue(true);
-
-    // Hash the password
     mockPasswordHash.hash = jest.fn().mockResolvedValue('encrypted_password');
     // hashed password should be stored in the user pre register model
     userPreRegister.password = 'encrypted_password';
-
-    // Save the user to database
     mockUserRepository.addUser = jest.fn().mockResolvedValue(userRegistered);
 
-    // Create a instance of AddUserUseCase
+    // Create instance of use case
     const addUserUseCase = new AddUserUseCase({
       userRepository: mockUserRepository,
       passwordHash: mockPasswordHash,
@@ -52,8 +48,9 @@ describe('AddUserUseCase', () => {
     const result = await addUserUseCase.execute(payload);
 
     // Assert the result
-    expect(mockUserRepository.isUsernameUnique).toHaveBeenCalledWith(payload);
-    expect(mockPasswordHash.hash).toHaveBeenCalledWith(payload);
+    expect(mockUserRepository.isUsernameUnique)
+      .toHaveBeenCalledWith({ username });
+    expect(mockPasswordHash.hash).toHaveBeenCalledWith({ password });
     expect(mockUserRepository.addUser).toHaveBeenCalledWith(userPreRegister);
     expect(result).toEqual(userRegistered);
   });
