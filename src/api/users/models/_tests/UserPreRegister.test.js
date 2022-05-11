@@ -1,33 +1,33 @@
-const UserPreRegister = require('../UserPreRegister');
+const UserPreRegister = require('../userPreRegister');
 
 describe('UserPreRegister entities', () => {
   it('should throw error when payload does not contain needed property', () => {
     const payload = {
-      username: 'dicoding',
+      username: 'fahru',
       password: 'asdasd123',
     };
 
-    expect(() => new UserPreRegister(payload)).toThrowError('USER_LOGIN.NOT_CONTAIN_NEEDED_PROPERTY');
+    expect(() => new UserPreRegister(payload)).toThrowError('USER_PRE_REGISTER.NOT_CONTAIN_NEEDED_PROPERTY');
   });
 
   it('should throw error when payload not meet data type specification', () => {
     const payload = {
-      username: 'dicoding',
+      username: 'fahru',
       password: true,
       fullname: 'Dicoding Indonesia',
     };
 
-    expect(() => new UserPreRegister(payload)).toThrowError('USER_LOGIN.NOT_MEET_DATA_TYPE_SPECIFICATION');
+    expect(() => new UserPreRegister(payload)).toThrowError('USER_PRE_REGISTER.NOT_MEET_DATA_TYPE_SPECIFICATION');
   });
 
   it('should throw error when password doesn\'t meet specification', () => {
     const payload = {
-      username: 'dicoding',
+      username: 'fahru',
       password: 'asdasd',
       fullname: 'Dicoding Indonesia',
     };
 
-    expect(() => new UserPreRegister(payload)).toThrowError('USER_LOGIN.PASSWORD_NOT_MEET_FORMAT');
+    expect(() => new UserPreRegister(payload)).toThrowError('USER_PRE_REGISTER.PASSWORD_NOT_MEET_FORMAT');
   });
 
   it('should create UserLogin entities correctly', () => {
