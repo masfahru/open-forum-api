@@ -8,6 +8,13 @@ const AddUserUseCase = require('../addUserUseCase');
  */
 describe('AddUserUseCase', () => {
   it('should orchestrating the add user action correctly', async () => {
+    /**
+     * Steps:
+     * 1. Make sure the username is unique
+     * 2. Hash the password
+     * 3. Save the user
+     * 4. Return the user
+     */
     // Arrange
     const username = 'fahru';
     const password = 'Password123#';
