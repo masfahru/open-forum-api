@@ -28,18 +28,17 @@ describe('GetAuthenticationUseCase', () => {
     const mockPasswordHash = new PasswordHash();
 
     // Mocking
-    mockUserRepository.getPasswordByUsername = jest.fn()
-      .mockImplementation(() => Promise.resolve('hashed_password'));
+    mockUserRepository.getPasswordByUsername = jest.fn().mockResolvedValue('hashed_password');
     mockPasswordHash.comparePassword = jest.fn()
-      .mockImplementation(() => Promise.resolve());
+      .mockResolvedValue();
     mockAuthenticationTokenManager.createAccessToken = jest.fn()
-      .mockImplementation(() => Promise.resolve(expectedAuthentication.accessToken));
+      .mockResolvedValue(expectedAuthentication.accessToken);
     mockAuthenticationTokenManager.createRefreshToken = jest.fn()
-      .mockImplementation(() => Promise.resolve(expectedAuthentication.refreshToken));
+      .mockResolvedValue(expectedAuthentication.refreshToken);
     mockUserRepository.getIdByUsername = jest.fn()
-      .mockImplementation(() => Promise.resolve('user-123'));
+      .mockResolvedValue('user-123');
     mockAuthenticationRepository.addToken = jest.fn()
-      .mockImplementation(() => Promise.resolve());
+      .mockResolvedValue();
 
     // create use case instance
     const loginUserUseCase = new LoginUserUseCase({
@@ -55,15 +54,15 @@ describe('GetAuthenticationUseCase', () => {
     // Assert
     expect(actualAuthentication).toEqual(expectedAuthentication);
     expect(mockUserRepository.getPasswordByUsername)
-      .toBeCalledWith({ username: useCasePayload.username });
+      .toBeCalledWith({ username });
     expect(mockPasswordHash.comparePassword)
-      .toBeCalledWith({ password: useCasePayload.password, hashedPassword: 'hashed_password' });
+      .toBeCalledWith({ password, hashedPassword: 'hashed_password' });
     expect(mockUserRepository.getIdByUsername)
-      .toBeCalledWith({ username: useCasePayload.username });
+      .toBeCalledWith({ username });
     expect(mockAuthenticationTokenManager.createAccessToken)
-      .toBeCalledWith({ username: useCasePayload.username, id: 'user-123' });
+      .toBeCalledWith({ username, id: 'user-123' });
     expect(mockAuthenticationTokenManager.createRefreshToken)
-      .toBeCalledWith({ username: useCasePayload.username, id: 'user-123' });
+      .toBeCalledWith({ username, id: 'user-123' });
     expect(mockAuthenticationRepository.addToken)
       .toBeCalledWith(expectedAuthentication.refreshToken);
   });
