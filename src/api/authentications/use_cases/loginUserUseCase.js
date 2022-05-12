@@ -39,6 +39,8 @@ module.exports = class LoginUserUseCase {
   /**
    * @method execute
    * @public
+   * @param {{ username: string, password: string }} payload
+   * @returns {Promise<{accessToken: string, refreshToken: string}>}
    */
   async execute(payload) {
     const { username, password } = new UserLogin(payload);
