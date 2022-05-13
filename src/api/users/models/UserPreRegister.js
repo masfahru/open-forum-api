@@ -26,6 +26,14 @@ module.exports = class UserPreRegister {
     if (typeof this.username !== 'string' || typeof this.password !== 'string' || typeof this.fullname !== 'string') {
       throw new Error('USER_PRE_REGISTER.NOT_MEET_DATA_TYPE_SPECIFICATION');
     }
+    // maximum length for username is 50
+    if (this.username.length > 50) {
+      throw new Error('USER_PRE_REGISTER.USERNAME_TOO_LONG');
+    }
+    // maximum length for username is 50
+    if (this.fullname.length > 50) {
+      throw new Error('USER_PRE_REGISTER.FULLNAME_TOO_LONG');
+    }
     // password must be at least 8 characters with at least 1 number, 1 uppercase
     // and 1 lowercase letter, and 1 special character
     const format = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/;
