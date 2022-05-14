@@ -43,7 +43,7 @@ describe('AddUserUseCase', () => {
     mockPasswordHash.hash = jest.fn().mockResolvedValue('encrypted_password');
     // hashed password should be stored in the user pre register model
     userPreRegister.password = 'encrypted_password';
-    mockUserRepository.addUser = jest.fn().mockResolvedValue(userRegistered);
+    mockUserRepository.addUser = jest.fn().mockResolvedValue(expectedPayload);
 
     // Create instance of use case
     const addUserUseCase = new AddUserUseCase({
