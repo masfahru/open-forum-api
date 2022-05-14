@@ -19,7 +19,7 @@ module.exports = class UserRepositoryPostgre {
   async isUsernameUnique({ username }) {
     const query = `SELECT username FROM users WHERE username = '${username}'`;
     const result = await this.#db.query(query);
-    if (result.length > 0) {
+    if (result.rows.length > 0) {
       throw new InvariantError('Username telah digunakan');
     }
   }
@@ -35,9 +35,9 @@ module.exports = class UserRepositoryPostgre {
       values: [username, password, fullname],
     };
     const result = await this.#db.query(query);
-    if (result.length === 0) {
+    if (result.rows.length === 0) {
       throw new InvariantError('Gagal menambahkan user');
     }
-    return result[0];
+    return result.rows[0];
   }
 };

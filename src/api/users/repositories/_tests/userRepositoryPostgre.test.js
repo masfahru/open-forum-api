@@ -12,8 +12,17 @@ describe('Test User Respository PostgreSQL', () => {
       fullname: 'fahru',
     };
 
+    // we only need to return this result from database
+    // for more information about this result, please refer to:
+    // https://node-postgres.com/api/result
+    const mockResolvedValue = {
+      rowCount: 1,
+      rows: [
+        { username: 'fahru' },
+      ],
+    };
     const mockDbService = new DbService();
-    mockDbService.query = jest.fn().mockResolvedValue([{ username: 'fahru' }]);
+    mockDbService.query = jest.fn().mockResolvedValue(mockResolvedValue);
 
     const mockUserRepository = new UserRepositoryPostgre(mockDbService);
     const userPreRegister = new UserPreRegister(payload);
@@ -27,18 +36,29 @@ describe('Test User Respository PostgreSQL', () => {
       fullname: 'fahru',
     };
 
-    const expectedPayload = {
+    const mockResolvedValue = {
+      rowCount: 1,
+      rows: [
+        {
+          id: 'user-123-456',
+          username: 'fahru',
+          fullname: 'fahru',
+        },
+      ],
+    };
+
+    const mockReturnValue = {
       id: 'user-123-456',
       username: 'fahru',
       fullname: 'fahru',
     };
 
     const mockDbService = new DbService();
-    mockDbService.query = jest.fn().mockResolvedValue([expectedPayload]);
+    mockDbService.query = jest.fn().mockResolvedValue(mockResolvedValue);
 
     const mockUserRepository = new UserRepositoryPostgre(mockDbService);
     const userPreRegister = new UserPreRegister(payload);
-    await expect(mockUserRepository.addUser(userPreRegister)).resolves.toBe(expectedPayload);
+    await expect(mockUserRepository.addUser(userPreRegister)).resolves.toStrictEqual(mockReturnValue);
   });
 
   it('should return Invariant Error when failed adding user', async () => {
@@ -48,26 +68,16 @@ describe('Test User Respository PostgreSQL', () => {
       fullname: 'fahru',
     };
 
+    const mockRejectedValue = {
+      rowCount: 0,
+      rows: [],
+    };
+
     const mockDbService = new DbService();
-    mockDbService.query = jest.fn().mockResolvedValue([]);
+    mockDbService.query = jest.fn().mockResolvedValue(mockRejectedValue);
 
     const mockUserRepository = new UserRepositoryPostgre(mockDbService);
     const userPreRegister = new UserPreRegister(payload);
     await expect(mockUserRepository.addUser(userPreRegister)).rejects.toThrowError(InvariantError);
   });
-
-  // it('should return Invariant Error when the database connection is failed', async () => {
-  //   const payload = {
-  //     username: 'fahru',
-  //     password: 'StrongPassword123#',
-  //     fullname: 'fahru',
-  //   };
-
-  //   const mockDbService = new DbService();
-  //   mockDbService.query = jest.fn().mockRejectedValue(new DatabaseError('Database connection failed'));
-
-  //   const mockUserRepository = new UserRepositoryPostgre(mockDbService);
-  //   const userPreRegister = new UserPreRegister(payload);
-  //   await expect(mockUserRepository.addUser(userPreRegister)).rejects.toThrowError(DatabaseError);
-  // });
 });
