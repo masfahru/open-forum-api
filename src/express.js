@@ -1,6 +1,7 @@
-const ServerConfig = require('./configs/server');
-const app = require('./services/server/express/createServer');
+const { serverConfig } = require('./configs/server');
+const app = require('./server/express/createServer');
+const container = require('./container');
 
-app.listen(ServerConfig.PORT, () => {
-  console.log(`Server berjalan di port: ${ServerConfig.PORT}`);
+app(container).listen(serverConfig.port, serverConfig.host, () => {
+  console.log(`Server running in port: ${serverConfig.port}`);
 });
