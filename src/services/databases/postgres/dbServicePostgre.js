@@ -24,7 +24,7 @@ module.exports = class DbServicePostgre {
       const res = await this.#pool.query(text, values);
       return (({ rowCount, rows }) => ({ rowCount, rows }))(res);
     } catch (error) {
-      throw new DatabaseError(JSON.stringify(error));
+      throw new DatabaseError(`Query: ${text}\nError: ${JSON.stringify(error)}`);
     }
   }
 
