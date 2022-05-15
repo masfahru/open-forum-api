@@ -19,10 +19,10 @@ if (error) {
 
 // create server configuration object
 const serverConfig = {
-  ENV: value.NODE_ENV,
-  PORT: value.PORT,
-  HOST: value.HOST,
+  env: value.NODE_ENV,
+  port: value.PORT,
+  host: value.HOST,
 };
 
 // export the configuration
-module.exports = serverConfig;
+module.exports = { serverConfig };
