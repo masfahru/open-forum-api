@@ -1,7 +1,8 @@
-const createServer = require('./services/server/hapijs/createServer');
+const createServer = require('./server/hapijs/createServer');
+const container = require('./container');
 
 (async () => {
-  const server = await createServer();
+  const server = await createServer(container);
   await server.start();
   console.log(`server start at ${server.info.uri}`);
 })();
