@@ -27,7 +27,7 @@ describe('UserPreRegister entities', () => {
       fullname: 'Dicoding Indonesia',
     };
 
-    expect(() => new UserPreRegister(payload)).toThrowError('USER_PRE_REGISTER.USERNAME_TOO_LONG');
+    expect(() => new UserPreRegister(payload)).toThrowError('USER_PRE_REGISTER.USERNAME_LIMIT_CHAR');
   });
 
   it('should throw error when fullname is too long', () => {
@@ -37,7 +37,17 @@ describe('UserPreRegister entities', () => {
       fullname: 'fahru ganteng sholeh rajin belajar dan bekerja suka menabung sayang keluarga',
     };
 
-    expect(() => new UserPreRegister(payload)).toThrowError('USER_PRE_REGISTER.FULLNAME_TOO_LONG');
+    expect(() => new UserPreRegister(payload)).toThrowError('USER_PRE_REGISTER.FULLNAME_LIMIT_CHAR');
+  });
+
+  it('should throw error when username contains forbidden character', () => {
+    const payload = {
+      username: 'fahru dicoding',
+      password: 'asdasd',
+      fullname: 'Dicoding Indonesia',
+    };
+
+    expect(() => new UserPreRegister(payload)).toThrowError('USER_PRE_REGISTER.USERNAME_CONTAIN_RESTRICTED_CHARACTER');
   });
 
   it('should throw error when password doesn\'t meet specification', () => {

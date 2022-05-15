@@ -18,24 +18,26 @@ module.exports = class UserPreRegister {
    * Check if the username, password, and fullname is valid
    */
   #isValid() {
-    // Username, password, and fullname must be provided
     if (!this.username || !this.password || !this.fullname) {
       throw new Error('USER_PRE_REGISTER.NOT_CONTAIN_NEEDED_PROPERTY');
     }
-    // Username, password, and fullname must be string
+
     if (typeof this.username !== 'string' || typeof this.password !== 'string' || typeof this.fullname !== 'string') {
       throw new Error('USER_PRE_REGISTER.NOT_MEET_DATA_TYPE_SPECIFICATION');
     }
-    // maximum length for username is 50
+
     if (this.username.length > 50) {
-      throw new Error('USER_PRE_REGISTER.USERNAME_TOO_LONG');
+      throw new Error('USER_PRE_REGISTER.USERNAME_LIMIT_CHAR');
     }
-    // maximum length for username is 50
+
     if (this.fullname.length > 50) {
-      throw new Error('USER_PRE_REGISTER.FULLNAME_TOO_LONG');
+      throw new Error('USER_PRE_REGISTER.FULLNAME_LIMIT_CHAR');
     }
-    // password must be at least 8 characters with at least 1 number, 1 uppercase
-    // and 1 lowercase letter, and 1 special character
+
+    if (!this.username.match(/^[\w]+$/)) {
+      throw new Error('USER_PRE_REGISTER.USERNAME_CONTAIN_RESTRICTED_CHARACTER');
+    }
+
     const format = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/;
     //
     if (!format.test(this.password)) throw new Error('USER_PRE_REGISTER.PASSWORD_NOT_MEET_FORMAT');
