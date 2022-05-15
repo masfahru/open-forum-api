@@ -1,14 +1,20 @@
 const InvariantError = require('../../../utils/errors/invariantError');
+const UserRepository = require('./abstracts/userRepository');
 
-module.exports = class UserRepositoryPostgre {
+module.exports = class UserRepositoryPostgre extends UserRepository {
   #db;
 
+  #idGenerator;
+
   /**
-   * @method constructor
+   * @constructor
    * @param {DbService} dbService
+   * @param {IdGenerator} idGenerator
    */
-  constructor(dbService) {
+  constructor(dbService, idGenerator) {
+    super();
     this.#db = dbService;
+    this.#idGenerator = idGenerator;
   }
 
   /**
@@ -33,9 +39,10 @@ module.exports = class UserRepositoryPostgre {
    * @param {{username: string, password: string, fullname: string}} userPreRegister
    */
   async addUser({ username, password, fullname }) {
+    const id = `user-${this.#idGenerator()}`;
     const query = {
-      text: 'INSERT INTO users (username, password, fullname) VALUES ($1, $2, $3) RETURNING id, username, fullname',
-      values: [username, password, fullname],
+      text: 'INSERT INTO users (id, username, password, fullname) VALUES ($1, $2, $3, $4) RETURNING id, username, fullname',
+      values: [id, username, password, fullname],
     };
     const result = await this.#db.query(query);
     if (result.rows.length === 0) {
