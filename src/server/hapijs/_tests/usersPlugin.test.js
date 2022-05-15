@@ -118,7 +118,7 @@ describe('/users endpoint', () => {
 
       expect(response.statusCode).toEqual(400);
       expect(response.body.status).toEqual('fail');
-      expect(response.body.message).toEqual('Username telah digunakan');
+      expect(response.body.message).toEqual('username tidak tersedia');
     });
   });
 });

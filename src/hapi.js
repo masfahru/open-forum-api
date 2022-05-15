@@ -1,5 +1,5 @@
 const createServer = require('./server/hapijs/createServer');
-const container = require('./container');
+const { container } = require('./container');
 
 (async () => {
   const server = await createServer(container);

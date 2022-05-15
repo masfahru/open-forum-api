@@ -7,8 +7,8 @@
     "test": "jest --setupFiles dotenv/config -i",
     "start:dev-hapi": "nodemon ./src/hapi.js",
     "start:hapi": "node ./src/hapi.js",
-    "start-dev-express": "nodemon ./src/express.js",
-    "start:express": "nodemon ./src/express.js",
+    "start:dev-express": "nodemon ./src/express.js",
+    "start:express": "node ./src/express.js",
     "migrate": "node-pg-migrate",
     "migrate:test": "node-pg-migrate --envPath ./.env.test.local"
   },
