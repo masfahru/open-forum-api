@@ -29,6 +29,39 @@ describe('Test User Respository PostgreSQL', () => {
     await expect(mockUserRepository.isUsernameUnique(userPreRegister)).rejects.toThrowError(InvariantError);
   });
 
+  it('should call query properly', async () => {
+    const payload = {
+      username: 'fahru',
+      password: 'StrongPassword123#',
+      fullname: 'fahru',
+    };
+
+    const mockResolvedValue = {
+      rowCount: 1,
+      rows: [
+        {
+          id: 'user-123-456',
+          username: 'fahru',
+          fullname: 'fahru',
+        },
+      ],
+    };
+
+    const mockDbService = new DbService();
+    mockDbService.query = jest.fn().mockResolvedValue(mockResolvedValue);
+
+    const spy = jest.spyOn(mockDbService, 'query');
+
+    const mockUserRepository = new UserRepositoryPostgre(mockDbService);
+    const userPreRegister = new UserPreRegister(payload);
+    await mockUserRepository.addUser(userPreRegister);
+    expect(spy).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledWith({
+      text: expect.any(String),
+      values: expect.any(Array),
+    });
+  });
+
   it('should return Expected Value when addUser is success', async () => {
     const payload = {
       username: 'fahru',

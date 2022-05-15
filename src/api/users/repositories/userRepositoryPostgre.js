@@ -17,7 +17,10 @@ module.exports = class UserRepositoryPostgre {
    * @param {{username: string}} userPreRegister
    */
   async isUsernameUnique({ username }) {
-    const query = `SELECT username FROM users WHERE username = '${username}'`;
+    const query = {
+      text: 'SELECT username FROM users WHERE username = $1',
+      values: [username],
+    };
     const result = await this.#db.query(query);
     if (result.rows.length > 0) {
       throw new InvariantError('Username telah digunakan');
