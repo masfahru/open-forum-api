@@ -1,4 +1,5 @@
 /* eslint-disable max-len */
+const { nanoid } = require('nanoid');
 const DbService = require('../../../../services/databases/abstracts/dbService');
 const { UserPreRegister } = require('../../models');
 const UserRepositoryPostgre = require('../userRepositoryPostgre');
@@ -24,15 +25,15 @@ describe('Test User Respository PostgreSQL', () => {
     const mockDbService = new DbService();
     mockDbService.query = jest.fn().mockResolvedValue(mockResolvedValue);
 
-    const mockUserRepository = new UserRepositoryPostgre(mockDbService);
+    const mockUserRepository = new UserRepositoryPostgre(mockDbService, nanoid);
     const userPreRegister = new UserPreRegister(payload);
     await expect(mockUserRepository.isUsernameUnique(userPreRegister)).rejects.toThrowError(InvariantError);
   });
 
   it('should call query properly', async () => {
-    const payload = {
+    const userPreRegister = {
       username: 'fahru',
-      password: 'StrongPassword123#',
+      password: 'hashed_password',
       fullname: 'fahru',
     };
 
@@ -40,7 +41,7 @@ describe('Test User Respository PostgreSQL', () => {
       rowCount: 1,
       rows: [
         {
-          id: 'user-123-456',
+          id: expect.any(String),
           username: 'fahru',
           fullname: 'fahru',
         },
@@ -52,13 +53,17 @@ describe('Test User Respository PostgreSQL', () => {
 
     const spy = jest.spyOn(mockDbService, 'query');
 
-    const mockUserRepository = new UserRepositoryPostgre(mockDbService);
-    const userPreRegister = new UserPreRegister(payload);
+    const mockUserRepository = new UserRepositoryPostgre(mockDbService, nanoid);
     await mockUserRepository.addUser(userPreRegister);
     expect(spy).toHaveBeenCalled();
     expect(spy).toHaveBeenCalledWith({
       text: expect.any(String),
-      values: expect.any(Array),
+      values: [
+        expect.any(String),
+        userPreRegister.username,
+        userPreRegister.password,
+        userPreRegister.fullname,
+      ],
     });
   });
 
@@ -89,7 +94,7 @@ describe('Test User Respository PostgreSQL', () => {
     const mockDbService = new DbService();
     mockDbService.query = jest.fn().mockResolvedValue(mockResolvedValue);
 
-    const mockUserRepository = new UserRepositoryPostgre(mockDbService);
+    const mockUserRepository = new UserRepositoryPostgre(mockDbService, nanoid);
     const userPreRegister = new UserPreRegister(payload);
     await expect(mockUserRepository.addUser(userPreRegister)).resolves.toStrictEqual(mockReturnValue);
   });
@@ -109,7 +114,7 @@ describe('Test User Respository PostgreSQL', () => {
     const mockDbService = new DbService();
     mockDbService.query = jest.fn().mockResolvedValue(mockRejectedValue);
 
-    const mockUserRepository = new UserRepositoryPostgre(mockDbService);
+    const mockUserRepository = new UserRepositoryPostgre(mockDbService, nanoid);
     const userPreRegister = new UserPreRegister(payload);
     await expect(mockUserRepository.addUser(userPreRegister)).rejects.toThrowError(InvariantError);
   });
