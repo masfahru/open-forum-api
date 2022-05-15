@@ -20,9 +20,10 @@ module.exports = class AddUserUseCase {
 
   /**
    * @constructor
-   * @param {{userRepository: UserRepository, passwordHash: PasswordHash}} dependencies
+   * @param {UserRepository} userRepository
+   * @param {PasswordHash} passwordHash
    */
-  constructor({ userRepository, passwordHash }) {
+  constructor(userRepository, passwordHash) {
     this.#userRepository = userRepository;
     this.#passwordHash = passwordHash;
   }

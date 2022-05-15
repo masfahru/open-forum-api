@@ -46,10 +46,7 @@ describe('AddUserUseCase', () => {
     mockUserRepository.addUser = jest.fn().mockResolvedValue(expectedPayload);
 
     // Create instance of use case
-    const addUserUseCase = new AddUserUseCase({
-      userRepository: mockUserRepository,
-      passwordHash: mockPasswordHash,
-    });
+    const addUserUseCase = new AddUserUseCase(mockUserRepository, mockPasswordHash);
 
     // Execute the use case
     const result = await addUserUseCase.execute(payload);
