@@ -1,5 +1,6 @@
+const { Pool } = require('pg');
 const DatabaseError = require('../../../../utils/errors/databaseError');
-const DbServicePostgre = require('../dbServicePostgre.');
+const DbServicePostgre = require('../dbServicePostgre');
 const { testDbConfig } = require('../../../../configs/database');
 
 describe('Database Service Postgre Test', () => {
@@ -12,13 +13,15 @@ describe('Database Service Postgre Test', () => {
       password: 'postgres',
       database: 'postgres',
     };
-    const dbServicePostgre = new DbServicePostgre(dbConfig);
+    const pool = new Pool(dbConfig);
+    const dbServicePostgre = new DbServicePostgre(pool);
     expect(dbServicePostgre).toBeInstanceOf(DbServicePostgre);
     await expect(dbServicePostgre.query({ text: 'SELECT NOW()' })).rejects.toThrow(DatabaseError);
   });
 
   it('should return object with required key when query is success', async () => {
-    const dbServicePostgre = new DbServicePostgre(testDbConfig);
+    const pool = new Pool(testDbConfig);
+    const dbServicePostgre = new DbServicePostgre(pool);
     expect(dbServicePostgre).toBeInstanceOf(DbServicePostgre);
     await expect(dbServicePostgre.query({ text: 'SELECT NOW()' })).resolves.toEqual(expect.objectContaining({
       rowCount: expect.any(Number),

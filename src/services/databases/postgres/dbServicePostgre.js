@@ -1,4 +1,3 @@
-const { Pool } = require('pg');
 const DatabaseError = require('../../../utils/errors/databaseError');
 
 module.exports = class DbServicePostgre {
@@ -6,12 +5,12 @@ module.exports = class DbServicePostgre {
 
   /**
    * @constructor
-   * @param {DbConfig} dbConfig
+   * @param {Pool} Pool
    * having this parameter, we could create multiple instance of Db ServicePostgre
    * with different config
    */
-  constructor(dbConfig) {
-    this.#pool = new Pool(dbConfig);
+  constructor(pool) {
+    this.#pool = pool;
   }
 
   async query({ text, values }) {
