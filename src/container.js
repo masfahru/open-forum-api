@@ -6,6 +6,7 @@
 // External dependencies
 const bcrypt = require('bcrypt');
 const { Pool } = require('pg');
+const { nanoid } = require('nanoid');
 
 /**
  *  Configs
@@ -49,18 +50,24 @@ const container = new Map();
 // database node-postgres
 const databaseConfig = (serverConfig.env === 'test') ? testDbConfig : dbConfig;
 const pool = new Pool(databaseConfig);
+container.set(Pool.name, pool);
 const dbService = new DbServicePostgre(pool);
-
+container.set(DbServicePostgre.name, dbService);
 // passwordHash
 const passwordHash = new PasswordHash(bcrypt);
-
+container.set(PasswordHash.name, passwordHash);
+// nanoid
+container.set('nanoid', nanoid);
 /**
  * Create instance for each plugin dependencies.
  * Add them to the container.
  */
 // Users plugin
-const userRepository = new UserRepositoryPostgre(dbService);
-const addUserUseCase = new AddUserUseCase(userRepository, passwordHash);
+const userRepository = new UserRepositoryPostgre(container.get(DbServicePostgre.name), container.get('nanoid'));
+container.set(UserRepositoryPostgre.name, userRepository);
+
+// eslint-disable-next-line max-len
+const addUserUseCase = new AddUserUseCase(container.get(UserRepositoryPostgre.name), container.get(PasswordHash.name));
 container.set(AddUserUseCase.name, addUserUseCase);
 
 module.exports = { container };
