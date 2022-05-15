@@ -19,11 +19,19 @@ describe('Database Service Postgre Test', () => {
     await expect(dbServicePostgre.query({ text: 'SELECT NOW()' })).rejects.toThrow(DatabaseError);
   });
 
+  it('should throw Database Error when required key is missing', async () => {
+    const pool = new Pool(testDbConfig);
+    const dbServicePostgre = new DbServicePostgre(pool);
+    const mockPayload = {
+      text: 'SELECT NOW()',
+    };
+    await expect(dbServicePostgre.query(mockPayload)).rejects.toThrow(DatabaseError);
+  });
+
   it('should return object with required key when query is success', async () => {
     const pool = new Pool(testDbConfig);
     const dbServicePostgre = new DbServicePostgre(pool);
-    expect(dbServicePostgre).toBeInstanceOf(DbServicePostgre);
-    await expect(dbServicePostgre.query({ text: 'SELECT NOW()' })).resolves.toEqual(expect.objectContaining({
+    await expect(dbServicePostgre.query({ text: 'SELECT NOW()', values: [] })).resolves.toEqual(expect.objectContaining({
       rowCount: expect.any(Number),
       rows: expect.any(Array),
     }));
