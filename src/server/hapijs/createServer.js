@@ -51,22 +51,21 @@ const createServer = async (container) => {
         return h.continue;
       }
 
+      // report to sentry if sentry is set
+      if (container.get('sentry')) {
+        container.get('sentry').captureException(response);
+      }
+
+      let status = 'Server Error';
       if (response instanceof DatabaseError) {
-        // we could change this console log with anoter logging system
-        console.log(response.message);
-        const newResponse = h.response({
-          status: 'Database Error',
-          message: 'Our Engineer is working on it. Please try again later.',
-        });
-        newResponse.code(response.statusCode);
-        return newResponse;
+        status = 'Database Error';
       }
 
       const newResponse = h.response({
-        status: 'Server Error',
+        status,
         message: 'Our Engineer is working on it. Please try again later.',
       });
-      newResponse.code(500);
+      newResponse.code(response.statusCode);
       return newResponse;
     }
 
