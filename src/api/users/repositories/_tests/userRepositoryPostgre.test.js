@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-const { nanoid } = require('nanoid');
+const { container } = require('../../../../container');
 const DbService = require('../../../../services/databases/abstracts/dbService');
 const { UserPreRegister } = require('../../models');
 const UserRepositoryPostgre = require('../userRepositoryPostgre');
@@ -25,7 +25,7 @@ describe('Test User Respository PostgreSQL', () => {
     const mockDbService = new DbService();
     mockDbService.query = jest.fn().mockResolvedValue(mockResolvedValue);
 
-    const mockUserRepository = new UserRepositoryPostgre(mockDbService, nanoid);
+    const mockUserRepository = new UserRepositoryPostgre(mockDbService, container.get('nanoid'));
     const userPreRegister = new UserPreRegister(payload);
     await expect(mockUserRepository.isUsernameUnique(userPreRegister)).rejects.toThrowError(InvariantError);
   });
@@ -53,7 +53,7 @@ describe('Test User Respository PostgreSQL', () => {
 
     const spy = jest.spyOn(mockDbService, 'query');
 
-    const mockUserRepository = new UserRepositoryPostgre(mockDbService, nanoid);
+    const mockUserRepository = new UserRepositoryPostgre(mockDbService, container.get('nanoid'));
     await mockUserRepository.addUser(userPreRegister);
     expect(spy).toHaveBeenCalled();
     expect(spy).toHaveBeenCalledWith({
@@ -94,7 +94,7 @@ describe('Test User Respository PostgreSQL', () => {
     const mockDbService = new DbService();
     mockDbService.query = jest.fn().mockResolvedValue(mockResolvedValue);
 
-    const mockUserRepository = new UserRepositoryPostgre(mockDbService, nanoid);
+    const mockUserRepository = new UserRepositoryPostgre(mockDbService, container.get('nanoid'));
     const userPreRegister = new UserPreRegister(payload);
     await expect(mockUserRepository.addUser(userPreRegister)).resolves.toStrictEqual(mockReturnValue);
   });
@@ -114,7 +114,7 @@ describe('Test User Respository PostgreSQL', () => {
     const mockDbService = new DbService();
     mockDbService.query = jest.fn().mockResolvedValue(mockRejectedValue);
 
-    const mockUserRepository = new UserRepositoryPostgre(mockDbService, nanoid);
+    const mockUserRepository = new UserRepositoryPostgre(mockDbService, container.get('nanoid'));
     const userPreRegister = new UserPreRegister(payload);
     await expect(mockUserRepository.addUser(userPreRegister)).rejects.toThrowError(InvariantError);
   });
