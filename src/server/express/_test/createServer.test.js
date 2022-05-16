@@ -1,6 +1,6 @@
 const request = require('supertest');
 const app = require('../createServer');
-const container = require('../../../container');
+const { container } = require('../../../container');
 
 describe('HTTP server', () => {
   it('should response success with server connection', async () => {
