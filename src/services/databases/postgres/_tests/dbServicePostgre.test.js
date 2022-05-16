@@ -1,9 +1,13 @@
 const { Pool } = require('pg');
+const { container } = require('../../../../container');
 const DatabaseError = require('../../../../utils/errors/databaseError');
 const DbServicePostgre = require('../dbServicePostgre');
-const { testDbConfig } = require('../../../../configs/database');
 
 describe('Database Service Postgre Test', () => {
+  afterAll(async () => {
+    await container.get(Pool.name).end();
+  });
+
   it('should return Database Error when the database connection is failed', async () => {
     // create random config
     const dbConfig = {
@@ -17,10 +21,11 @@ describe('Database Service Postgre Test', () => {
     const dbServicePostgre = new DbServicePostgre(pool);
     expect(dbServicePostgre).toBeInstanceOf(DbServicePostgre);
     await expect(dbServicePostgre.query({ text: 'SELECT NOW()' })).rejects.toThrow(DatabaseError);
+    await pool.end();
   });
 
   it('should throw Database Error when required key is missing', async () => {
-    const pool = new Pool(testDbConfig);
+    const pool = container.get(Pool.name);
     const dbServicePostgre = new DbServicePostgre(pool);
     const mockPayload = {
       text: 'SELECT NOW()',
@@ -29,13 +34,11 @@ describe('Database Service Postgre Test', () => {
   });
 
   it('should return object with required key when query is success', async () => {
-    const pool = new Pool(testDbConfig);
+    const pool = container.get(Pool.name);
     const dbServicePostgre = new DbServicePostgre(pool);
     await expect(dbServicePostgre.query({ text: 'SELECT NOW()', values: [] })).resolves.toEqual(expect.objectContaining({
       rowCount: expect.any(Number),
       rows: expect.any(Array),
     }));
-    // should end the connection
-    await dbServicePostgre.end();
   });
 });
