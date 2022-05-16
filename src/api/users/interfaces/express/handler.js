@@ -18,7 +18,10 @@ module.exports = class UsersHandler {
   /**
    * @method postUsersHandler
    * @async
-   * @param {}
+   * @param {object} req - Express request object.
+   * @param {object} res - Express response object.
+   * @param {function} next - Express next middleware function.
+   * @returns {object} - Express response object.
    */
   async postUsersHandler(req, res, next) {
     try {
