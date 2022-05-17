@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 /**
  * Dependency injection container.
  * Using hash-based object as storage.
@@ -61,17 +62,20 @@ container.set(PasswordHash.name, passwordHash);
 // nanoid
 container.set('nanoid', nanoid);
 // sentry
-const tracesSampleRate = (serverConfig.env === 'test') ? 1 : 0.2;
-const sentry = Sentry.init({
-  dsn: loggerConfig.dsn,
+// don't add sentry in test env
+if (serverConfig.env !== 'test') {
+  const tracesSampleRate = (serverConfig.env === 'development') ? 1 : 0.2;
+  const sentry = Sentry.init({
+    dsn: loggerConfig.dsn,
 
-  // Set tracesSampleRate to 1.0 to capture 100%
-  // of transactions for performance monitoring.
-  // We recommend adjusting this value in production
-  tracesSampleRate,
-});
-// only add sentry if dsn is set
-if (loggerConfig.dsn.length > 0) container.set('sentry', sentry);
+    // Set tracesSampleRate to 1.0 to capture 100%
+    // of transactions for performance monitoring.
+    // We recommend adjusting this value in production
+    tracesSampleRate,
+  });
+  // only add sentry if dsn is set
+  if (loggerConfig.dsn.length > 0) container.set('sentry', sentry);
+}
 
 /**
  * Create instance for each plugin dependencies.
