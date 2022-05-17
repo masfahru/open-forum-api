@@ -18,10 +18,38 @@ describe('UserLogin entities', () => {
     expect(() => new UserLogin(payload)).toThrowError('USER_LOGIN.NOT_MEET_DATA_TYPE_SPECIFICATION');
   });
 
+  it('should throw error when username is too long', () => {
+    const payload = {
+      username: 'fahrugantengsholehrajinbelajardanbekerjasukamenabungsayangkeluarga',
+      password: 'asdasd',
+    };
+
+    expect(() => new UserLogin(payload)).toThrowError('USER_LOGIN.USERNAME_LIMIT_CHAR');
+  });
+
+  it('should throw error when username contains forbidden character', () => {
+    const payload = {
+      username: 'fahru dicoding',
+      password: 'asdasd',
+    };
+
+    expect(() => new UserLogin(payload)).toThrowError('USER_LOGIN.USERNAME_CONTAIN_RESTRICTED_CHARACTER');
+  });
+
+  it('should throw error when password doesn\'t meet specification', () => {
+    const payload = {
+      username: 'fahru',
+      password: 'asdasd',
+    };
+
+    expect(() => new UserLogin(payload)).toThrowError('USER_LOGIN.PASSWORD_NOT_MEET_FORMAT');
+  });
+
   it('should create UserLogin entities correctly', () => {
     const payload = {
-      password: 'true',
-      username: 'dicoding',
+      username: 'fahru',
+      password: 'StrongP4ssw0rd$',
+      fullname: 'Dicoding Indonesia',
     };
 
     const userLogin = new UserLogin(payload);
