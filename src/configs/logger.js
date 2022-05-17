@@ -2,7 +2,7 @@
 require('dotenv').config();
 const Joi = require('joi');
 
-// Joi Schema for server configuration
+// Joi Schema for logger configuration
 const schema = Joi.object().keys({
   NODE_ENV: Joi.string().valid('production', 'development', 'test').default('development'),
   SENTRY_DSN: [Joi.string(), Joi.allow(''), Joi.allow(null)],
@@ -18,7 +18,7 @@ if (error) {
   throw new Error(`Config validation error: ${error.message}`);
 }
 console.log(value);
-// create server configuration object
+// create logger configuration object
 const loggerConfig = {
   env: value.NODE_ENV,
   dsn: value.SENTRY_DSN,
