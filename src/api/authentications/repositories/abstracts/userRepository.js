@@ -13,12 +13,4 @@ module.exports = class UserRepository {
   async getPasswordByUsername({ username }) {
     throw new Error('USER_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
-
-  /**
-   * @method isUsernameUnique
-   * @param {{username: string}}
-   */
-  async isUsernameUnique({ username }) {
-    throw new Error('USER_REPOSITORY.METHOD_NOT_IMPLEMENTED');
-  }
 };

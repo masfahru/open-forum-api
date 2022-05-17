@@ -14,11 +14,8 @@ module.exports = class DbServicePostgre {
   }
 
   async query({ text, values }) {
-    if (!text) {
+    if (!text || !values) {
       throw new DatabaseError('Missing required key text');
-    }
-    if (!values) {
-      throw new DatabaseError('Missing required key values');
     }
     try {
       const res = await this.#pool.query(text, values);

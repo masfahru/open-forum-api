@@ -14,7 +14,7 @@ module.exports = class AuthenticationTokenManager {
     throw new Error('AUTHENTICATION_TOKEN_MANAGER.METHOD_NOT_IMPLEMENTED');
   }
 
-  async decodePayload() {
+  async decodePayload(payload) {
     throw new Error('AUTHENTICATION_TOKEN_MANAGER.METHOD_NOT_IMPLEMENTED');
   }
 };
