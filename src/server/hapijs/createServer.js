@@ -1,5 +1,4 @@
 const Hapi = require('@hapi/hapi');
-const { Pool } = require('pg');
 const { serverConfig } = require('../../configs/server');
 const users = require('../../api/users/interfaces/hapi');
 const ClientError = require('../../utils/errors/clientError');
@@ -52,28 +51,28 @@ const createServer = async (container) => {
       }
 
       // report to sentry if sentry is set
-      if (container.get('sentry')) {
-        container.get('sentry').captureException(response);
-      }
+      // if (container.get('sentry')) {
+      //   container.get('sentry').captureException(response);
+      // }
 
-      let status = 'Server Error';
-      if (response instanceof DatabaseError) {
-        status = 'Database Error';
+      if (translatedError instanceof DatabaseError) {
+        const newResponse = h.response({
+          status: 'Database Error',
+          message: 'Our Engineer is working on it. Please try again later.',
+        });
+        newResponse.code(response.statusCode);
+        return newResponse;
       }
 
       const newResponse = h.response({
-        status,
+        status: 'Server Error',
         message: 'Our Engineer is working on it. Please try again later.',
       });
-      newResponse.code(response.statusCode);
+      newResponse.code(500);
       return newResponse;
     }
 
     return response.continue || response;
-  });
-
-  server.events.on('closing', () => {
-    container.get(Pool.name).end();
   });
 
   return server;

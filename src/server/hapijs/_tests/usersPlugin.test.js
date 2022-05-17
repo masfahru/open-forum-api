@@ -1,21 +1,19 @@
 const { Pool } = require('pg');
 const request = require('supertest');
+const { testDbConfig } = require('../../../configs/database');
 const { container } = require('../../../container');
 const createServer = require('../createServer');
 
 describe('/users endpoint', () => {
-  afterEach(async () => {
-    await container.get(Pool.name).query('TRUNCATE users CASCADE');
-  });
-
   afterAll(async () => {
+    await container.get(Pool.name).query('TRUNCATE users CASCADE');
     await container.get(Pool.name).end();
   });
 
   describe('when POST /users', () => {
     it('should response 201 and persisted user', async () => {
       const requestPayload = {
-        username: 'dicoding',
+        username: 'dicodingHapi',
         password: 'Password123#',
         fullname: 'Dicoding Indonesia',
       };
@@ -104,11 +102,11 @@ describe('/users endpoint', () => {
     it('should response 400 when username unavailable', async () => {
       const queryTest = {
         text: 'INSERT INTO users (id, username, password, fullname) VALUES ($1, $2, $3, $4)',
-        values: ['user-123-456', 'dicoding', 'hashed_password', 'Dicoding Indonesia'],
+        values: ['user-hapi-123-456', 'dicodingHapiTwin', 'hashed_password', 'Dicoding Indonesia'],
       };
       container.get(Pool.name).query(queryTest.text, queryTest.values);
       const requestPayload = {
-        username: 'dicoding',
+        username: 'dicodingHapiTwin',
         fullname: 'Dicoding Indonesia',
         password: 'Password123#',
       };
@@ -119,6 +117,40 @@ describe('/users endpoint', () => {
       expect(response.statusCode).toEqual(400);
       expect(response.body.status).toEqual('fail');
       expect(response.body.message).toEqual('username tidak tersedia');
+    });
+
+    it('should response 500 database error when unable to connect to database', async () => {
+      // end connection to database
+      await container.get(Pool.name).end();
+      const requestPayload = {
+        username: 'dicoding',
+        fullname: 'Dicoding Indonesia',
+        password: 'Password123#',
+      };
+      const server = await createServer(container);
+      const response = await request(server.listener).post('/users').send(requestPayload);
+
+      expect(response.statusCode).toEqual(500);
+      expect(response.body.status).toEqual('Database Error');
+      expect(response.body.message).toEqual('Our Engineer is working on it. Please try again later.');
+
+      // should create new connection to database again
+      const pool = new Pool(testDbConfig);
+      container.set(Pool.name, pool);
+    });
+
+    it('should response 500 server error when unable to create user', async () => {
+      const requestPayload = {
+        username: 'dicoding',
+        fullname: 'Dicoding Indonesia',
+        password: 'Password123#',
+      };
+      const server = await createServer({});
+      const response = await request(server.listener).post('/users').send(requestPayload);
+
+      expect(response.statusCode).toEqual(500);
+      expect(response.body.status).toEqual('Server Error');
+      expect(response.body.message).toEqual('Our Engineer is working on it. Please try again later.');
     });
   });
 });

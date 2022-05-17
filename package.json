@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --setupFiles dotenv/config -i",
+    "test": "jest --coverage",
     "start:dev-hapi": "nodemon ./src/hapi.js",
     "start:hapi": "node ./src/hapi.js",
     "start:dev-express": "nodemon ./src/express.js",

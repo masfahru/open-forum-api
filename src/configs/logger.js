@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 require('dotenv').config();
 const Joi = require('joi');
 
