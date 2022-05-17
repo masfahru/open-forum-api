@@ -41,4 +41,14 @@ describe('Database Service Postgre Test', () => {
       rows: expect.any(Array),
     }));
   });
+
+  it('should drain all connections when end is called', async () => {
+    const pool = container.get(Pool.name);
+    const dbServicePostgre = new DbServicePostgre(pool);
+    await dbServicePostgre.end();
+    await expect(pool.totalCount).toBe(0);
+
+    // recreate pool
+    container.set(Pool.name, new Pool(container.get(Pool.name).config));
+  });
 });
