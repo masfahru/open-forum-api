@@ -8,14 +8,12 @@
 const bcrypt = require('bcrypt');
 const { Pool } = require('pg');
 const { nanoid } = require('nanoid');
-const Sentry = require('@sentry/node');
 
 /**
  *  Configs
  */
 const { serverConfig } = require('./configs/server');
 const { dbConfig, testDbConfig } = require('./configs/database');
-const { loggerConfig } = require('./configs/logger');
 
 /**
  * Utilities
@@ -61,21 +59,6 @@ const passwordHash = new PasswordHash(bcrypt);
 container.set(PasswordHash.name, passwordHash);
 // nanoid
 container.set('nanoid', nanoid);
-// sentry
-// don't add sentry in test env
-if (serverConfig.env !== 'test') {
-  const tracesSampleRate = (serverConfig.env === 'development') ? 1 : 0.2;
-  const sentry = Sentry.init({
-    dsn: loggerConfig.dsn,
-
-    // Set tracesSampleRate to 1.0 to capture 100%
-    // of transactions for performance monitoring.
-    // We recommend adjusting this value in production
-    tracesSampleRate,
-  });
-  // only add sentry if dsn is set
-  if (loggerConfig.dsn.length > 0) container.set('sentry', sentry);
-}
 
 /**
  * Create instance for each plugin dependencies.
