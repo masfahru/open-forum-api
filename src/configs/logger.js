@@ -5,7 +5,8 @@ const Joi = require('joi');
 // Joi Schema for server configuration
 const schema = Joi.object().keys({
   NODE_ENV: Joi.string().valid('production', 'development', 'test').default('development'),
-  SENTRY_DSN: Joi.string().default(''),
+  SENTRY_DSN: [Joi.string(), Joi.allow(''), Joi.allow(null)],
+  SAMPLE_RATE: Joi.number().min(0).max(1).default(1),
 }).unknown();
 
 // Validate the configuration
@@ -16,11 +17,12 @@ const { value, error } = schema
 if (error) {
   throw new Error(`Config validation error: ${error.message}`);
 }
-
+console.log(value);
 // create server configuration object
 const loggerConfig = {
   env: value.NODE_ENV,
   dsn: value.SENTRY_DSN,
+  sampleRate: value.SAMPLE_RATE,
 };
 
 // export the configuration

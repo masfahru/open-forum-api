@@ -139,7 +139,7 @@ describe('/users endpoint', () => {
       container.set(Pool.name, pool);
     });
 
-    it('should response 500 server error when unable to create user', async () => {
+    it('should response 500 server error when unknown error', async () => {
       const requestPayload = {
         username: 'dicoding',
         fullname: 'Dicoding Indonesia',

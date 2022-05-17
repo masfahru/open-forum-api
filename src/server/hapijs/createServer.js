@@ -4,6 +4,7 @@ const users = require('../../api/users/interfaces/hapi');
 const ClientError = require('../../utils/errors/clientError');
 const DatabaseError = require('../../utils/errors/databaseError');
 const DomainErrorTranslator = require('../../utils/errors/domainErrorTranslator');
+const loggerSentry = require('../../utils/logger/sentry');
 
 const createServer = async (container) => {
   const server = Hapi.server({
@@ -50,10 +51,7 @@ const createServer = async (container) => {
         return h.continue;
       }
 
-      // report to sentry if sentry is set
-      // if (container.get('sentry')) {
-      //   container.get('sentry').captureException(response);
-      // }
+      loggerSentry(response);
 
       if (translatedError instanceof DatabaseError) {
         const newResponse = h.response({
