@@ -17,7 +17,7 @@ const { value, error } = schema
 if (error) {
   throw new Error(`Config validation error: ${error.message}`);
 }
-console.log(value);
+
 // create logger configuration object
 const loggerConfig = {
   env: value.NODE_ENV,
