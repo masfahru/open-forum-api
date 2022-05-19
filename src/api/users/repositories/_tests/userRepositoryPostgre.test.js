@@ -8,30 +8,23 @@ const InvariantError = require('../../../../utils/errors/invariantError');
 
 describe('Integration Test User Respository PostgreSQL', () => {
   const pool = new Pool(testDbConfig);
-  const dbService = new DbServicePostgre(pool);
 
   // truncating table happens before and after all test
   // so make sure to use unique username each test
   beforeAll(async () => {
     // should truncate the table first
-    await dbService.query({
-      text: 'TRUNCATE users CASCADE',
-      values: [],
-    });
+    await pool.query('TRUNCATE users CASCADE');
     // insert a user
     const query = {
       text: 'INSERT INTO users (id, username, password, fullname) VALUES ($1, $2, $3, $4)',
       values: ['id-123-456-789-10', 'user-existUsername', 'hashed_password', 'fullname'],
     };
-    await dbService.query(query);
+    await pool.query(query.text, query.values);
   });
 
   afterAll(async () => {
     // Truncate user table
-    await dbService.query({
-      text: 'TRUNCATE users CASCADE',
-      values: [],
-    });
+    await pool.query('TRUNCATE users CASCADE');
 
     // end pool
     await pool.end();
@@ -44,6 +37,7 @@ describe('Integration Test User Respository PostgreSQL', () => {
       fullname: 'fahru',
     };
 
+    const dbService = new DbServicePostgre(pool);
     const userRepository = new UserRepositoryPostgre(dbService, nanoid);
 
     await expect(userRepository.isUsernameUnique(payload)).rejects.toThrowError(InvariantError);
@@ -56,6 +50,7 @@ describe('Integration Test User Respository PostgreSQL', () => {
       fullname: 'fahru',
     };
 
+    const dbService = new DbServicePostgre(pool);
     const spy = jest.spyOn(dbService, 'query');
     const userRepository = new UserRepositoryPostgre(dbService, nanoid);
 
