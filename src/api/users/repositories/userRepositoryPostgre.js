@@ -45,9 +45,6 @@ module.exports = class UserRepositoryPostgre extends UserRepository {
       values: [id, username, password, fullname],
     };
     const result = await this.#db.query(query);
-    if (result.rows.length === 0) {
-      throw new InvariantError('Gagal menambahkan user');
-    }
     return result.rows[0];
   }
 };
