@@ -1,11 +1,7 @@
 /**
  * Function to route the request to the correct handler.
  * @param {UsersHander} handler
- * @returns {[{
- * method: string,
- * path: string
- * handler: function
- * }]} list of routes
+ * @returns {Route[]} list of routes
  */
 const routes = (handler) => [
   {
