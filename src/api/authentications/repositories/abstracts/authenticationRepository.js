@@ -15,10 +15,10 @@ module.exports = class AuthenticationsRepository {
   }
 
   /**
-   * @method checkAvailabilityToken
+   * @method isTokenExist
    * @param {{token: string}} payload
    */
-  async checkAvailabilityToken({ token }) {
+  async isTokenExist({ token }) {
     throw new Error('AUTHENTICATION_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 
