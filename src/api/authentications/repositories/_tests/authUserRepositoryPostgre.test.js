@@ -8,7 +8,6 @@ const AuthUserRepository = require('../authUserRepositoryPostgre');
 describe('Test UserRepository Postgre for Authentications', () => {
   const pool = new Pool(testDbConfig);
   const dbService = new DbService(pool);
-  const authUserRepository = new AuthUserRepository(dbService, nanoid);
 
   // truncating table happens before and after all test
   // so make sure to use unique username each test
@@ -32,6 +31,9 @@ describe('Test UserRepository Postgre for Authentications', () => {
       text: 'TRUNCATE users CASCADE',
       values: [],
     });
+
+    // end pool
+    await pool.end();
   });
 
   it('should throw 401 Error when username not found', async () => {
@@ -40,6 +42,7 @@ describe('Test UserRepository Postgre for Authentications', () => {
       password: 'StrongP4ssw0rd$',
     };
 
+    const authUserRepository = new AuthUserRepository(dbService, nanoid);
     // eslint-disable-next-line max-len
     await expect(authUserRepository.getPasswordByUsername(payload)).rejects.toThrowError(AuthenticationError);
   });
@@ -48,10 +51,13 @@ describe('Test UserRepository Postgre for Authentications', () => {
     const payload = {
       username: 'user-existUsername',
     };
+    const spy = jest.spyOn(dbService, 'query');
+    const authUserRepository = new AuthUserRepository(dbService, nanoid);
 
     const result = await authUserRepository.getPasswordByUsername(payload);
     expect(result).toEqual({
       password: expect.any(String),
     });
+    expect(spy).toHaveBeenCalledTimes(1);
   });
 });
