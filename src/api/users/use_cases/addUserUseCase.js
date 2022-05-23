@@ -36,10 +36,9 @@ module.exports = class AddUserUseCase {
    * @returns {Promise<UserRegistered>}
    */
   async execute(payload) {
-    const { username, password } = payload;
     const userPreRegister = new UserPreRegister(payload);
-    await this.#userRepository.isUsernameUnique({ username });
-    userPreRegister.password = await this.#passwordHash.hash({ password });
+    await this.#userRepository.isUsernameUnique(userPreRegister);
+    userPreRegister.password = await this.#passwordHash.hash(userPreRegister);
     return new UserRegistered(await this.#userRepository.addUser(userPreRegister));
   }
 };

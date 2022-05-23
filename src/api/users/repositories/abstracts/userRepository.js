@@ -8,7 +8,7 @@
 module.exports = class UserRepository {
   /**
    * @method addUser
-   * @param {UserPreRegister} user
+   * @param {UserPreRegister} userPreRegister
    */
   async addUser(userPreRegister) {
     throw new Error('USER_REPOSITORY.METHOD_NOT_IMPLEMENTED');
@@ -16,9 +16,17 @@ module.exports = class UserRepository {
 
   /**
    * @method isUsernameUnique
-   * @param {{username: string}}
+   * @param {UserPreRegister} userPreRegister
    */
-  async isUsernameUnique({ username }) {
+  async isUsernameUnique(userPreRegister) {
+    throw new Error('USER_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+  }
+
+  /**
+   * @method getPasswordByUsername
+   * @param {UserPreRegister} userPreRegister
+   */
+  async getPasswordByUsername(userPreRegister) {
     throw new Error('USER_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 };

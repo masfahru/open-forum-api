@@ -53,8 +53,8 @@ describe('AddUserUseCase', () => {
 
     // Assert the result
     expect(mockUserRepository.isUsernameUnique)
-      .toHaveBeenCalledWith({ username });
-    expect(mockPasswordHash.hash).toHaveBeenCalledWith({ password });
+      .toHaveBeenCalledWith(userPreRegister);
+    expect(mockPasswordHash.hash).toHaveBeenCalledWith(userPreRegister);
     expect(mockUserRepository.addUser).toHaveBeenCalledWith(userPreRegister);
     expect(result).toEqual(userRegistered);
   });

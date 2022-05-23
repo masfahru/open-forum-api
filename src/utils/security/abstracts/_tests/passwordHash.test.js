@@ -9,6 +9,6 @@ describe('EncryptionHelper interface', () => {
 
     // Action & Assert
     await expect(encryptionHelper.hash({ password })).rejects.toThrowError('PASSWORD_HASH.METHOD_NOT_IMPLEMENTED');
-    await expect(encryptionHelper.comparePassword({ password, hashedPassword })).rejects.toThrowError('PASSWORD_HASH.METHOD_NOT_IMPLEMENTED');
+    await expect(encryptionHelper.comparePassword(password, hashedPassword)).rejects.toThrowError('PASSWORD_HASH.METHOD_NOT_IMPLEMENTED');
   });
 });

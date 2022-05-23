@@ -15,9 +15,10 @@ module.exports = class PasswordHash {
 
   /**
    * Compare hashed Password
-   * @param {{password: string, hashedPassword: string}}
+   * @param {string} password
+   * @param {string} hashedPassword
    */
-  async comparePassword({ password, hashedPassword }) {
+  async comparePassword(password, hashedPassword) {
     throw new Error('PASSWORD_HASH.METHOD_NOT_IMPLEMENTED');
   }
 };

@@ -38,9 +38,11 @@ describe('Integration Test User Respository PostgreSQL', () => {
     };
 
     const dbService = new DbServicePostgre(pool);
+    const spy = jest.spyOn(dbService, 'query');
     const userRepository = new UserRepositoryPostgre(dbService, nanoid);
 
     await expect(userRepository.isUsernameUnique(payload)).rejects.toThrowError(InvariantError);
+    expect(spy).toHaveBeenCalledTimes(1);
   });
 
   it('should return Expected Value when addUser is success', async () => {
@@ -58,6 +60,35 @@ describe('Integration Test User Respository PostgreSQL', () => {
       id: expect.any(String),
       username: payload.username,
       fullname: payload.fullname,
+    });
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  it('should throw 400 Error when username not found', async () => {
+    const payload = {
+      username: 'notfound-username',
+      password: 'StrongP4ssw0rd$',
+    };
+
+    const dbService = new DbServicePostgre(pool);
+    const spy = jest.spyOn(dbService, 'query');
+    const userRepository = new UserRepositoryPostgre(dbService, nanoid);
+    // eslint-disable-next-line max-len
+    await expect(userRepository.getPasswordByUsername(payload)).rejects.toThrowError(InvariantError);
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  it('should return required value if username is found', async () => {
+    const payload = {
+      username: 'user-existUsername',
+    };
+    const dbService = new DbServicePostgre(pool);
+    const spy = jest.spyOn(dbService, 'query');
+    const userRepositoryPostgre = new UserRepositoryPostgre(dbService, nanoid);
+
+    const result = await userRepositoryPostgre.getPasswordByUsername(payload);
+    expect(result).toEqual({
+      password: expect.any(String),
     });
     expect(spy).toHaveBeenCalledTimes(1);
   });
